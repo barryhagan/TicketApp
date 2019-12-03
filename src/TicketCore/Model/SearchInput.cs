@@ -7,6 +7,6 @@ namespace TicketCore.Model
     public class SearchInput
     {
         public string search { get; set; }
-        public List<string> objectTypes { get; set; }
+        public string docType { get; set; }
     }
 }

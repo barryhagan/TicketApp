@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TicketApi.GraphQL.Types;
-using TicketCore.Interfaces;
 using TicketCore.Model;
 
 namespace TicketApi.GraphQL.Schemas
@@ -41,7 +40,7 @@ namespace TicketApi.GraphQL.Schemas
 
             Field<GlobalSearchResultGraphType>()
                 .Name("globalSearch")
-                .Argument<NonNullGraphType<SearchInputType>>("input", "The entity to delete notifications for.")
+                .Argument<NonNullGraphType<SearchInputType>>("input", "The search terms and filters.")
                 .ResolveAsync(async ctx =>
                 {
                     var input = ctx.GetArgument<SearchInput>("input");

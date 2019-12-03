@@ -29,8 +29,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TicketCore\TicketCore.csproj" />
-    <ProjectReference Include="..\TicketSearch\TicketSearch.csproj" />
-    <ProjectReference Include="..\TicketStorage\TicketStorage.csproj" />
+    <ProjectReference Include="..\TicketSearch.Lucene\TicketSearch.Lucene.csproj" />
+    <ProjectReference Include="..\TicketStorage.InMemory\TicketStorage.InMemory.csproj" />
   </ItemGroup>
 
   <ItemGroup>

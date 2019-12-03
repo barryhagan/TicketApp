@@ -2,7 +2,6 @@
 using GraphQL.Types;
 using System;
 using System.Linq;
-using TicketCore.Interfaces;
 using TicketCore.Model;
 
 namespace TicketApi.GraphQL.Types

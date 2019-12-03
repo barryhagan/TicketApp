@@ -4,12 +4,16 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using TicketApi.GraphQL;
 using TicketApi.GraphQL.Schemas;
 using TicketCore;
 using TicketCore.Interfaces;
+using TicketSearch.Lucene;
+using TicketStorage.InMemory;
 
 namespace TicketApi
 {
@@ -27,9 +31,14 @@ namespace TicketApi
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "ReactApp/build";
+            });
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
-                //options.SetInHubJwtBearerOptions(jwtIssuerOptions);
+                //TODO: add JWT auth
             });
 
             services.AddResponseCompression(options =>
@@ -39,14 +48,15 @@ namespace TicketApi
 
             services.AddGraphQL(opts =>
             {
-                opts.EnableMetrics = false;
-                opts.ExposeExceptions = Environment.IsDevelopment();
+                opts.EnableMetrics = true;
+                opts.ExposeExceptions = !Environment.IsProduction();
             })
             .AddGraphQLAuthorization(options =>
             {
                 options.AddPolicy(TicketSchema.GraphQLAuthPolicyName, p =>
                 {
                     p.RequireAssertion(x => true);
+                    // TODO : enable authorization after JWT auth is turned on
                     //p.RequireAuthenticatedUser();
                 });
             })
@@ -56,8 +66,9 @@ namespace TicketApi
 
             services.AddSingleton<TicketSchema>();
             
-            services.AddSingleton<ITicketStore, TicketStorage.InMemoryTicketStore>();
-            services.AddSingleton<ITicketSearch, TicketSearch.InMemoryLuceneSearch>();
+            services.AddSingleton<ITicketStore, InMemoryTicketStore>();
+            services.AddSingleton<ITicketSearch, InMemoryLuceneSearch>();
+            services.AddSingleton<IDataLoader, EmbeddedJsonDataLoader>();
 
             services.AddSingleton<TicketBusinessLogic>();
         }
@@ -69,23 +80,32 @@ namespace TicketApi
                 app.UseDeveloperExceptionPage();            
             }
 
+            app.UseStaticFiles();
+            app.UseSpaStaticFiles();
             app.UseAuthentication();
-
             app.UseResponseCompression();
 
-            app.UseGraphQL<TicketSchema>();
-            if (env.IsDevelopment())
+            app.UseGraphQL<TicketSchema, TicketGraphQLHttpMiddleware<TicketSchema>>();
+            if (!env.IsProduction())
             {
                 app.UseGraphQLPlayground(new GraphQLPlaygroundOptions());
             }
+
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "ReactApp";
+
+                if (env.IsDevelopment())
+                {
+                    spa.UseReactDevelopmentServer(npmScript: "start");
+                }
+            });
 
             var logger = app.ApplicationServices.GetService<ILogger<Startup>>();
             logger.LogInformation($"Application Version: {RuntimeInfo.ApplicationVersion} {RuntimeInfo.ApplicationBuild}");
 
             var loader = app.ApplicationServices.GetService<TicketBusinessLogic>();
-            loader.InitializeData().Wait();
-
-            
+            loader.InitializeData().Wait();            
         }
     }
 }

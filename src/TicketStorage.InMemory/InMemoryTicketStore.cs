@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,7 +6,7 @@ using TicketCore.Exceptions;
 using TicketCore.Interfaces;
 using TicketCore.Model;
 
-namespace TicketStorage
+namespace TicketStorage.InMemory
 {
     public class InMemoryTicketStore : ITicketStore
     {

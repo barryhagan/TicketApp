@@ -1,9 +1,9 @@
-﻿using Lucene.Net.Documents;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Lucene.Net.Documents;
 using TicketCore.Model;
 
-namespace TicketSearch.LuceneModel
+namespace TicketSearch.Lucene.SearchModel
 {
     internal static class OrganizationDoc
     {
@@ -31,10 +31,10 @@ namespace TicketSearch.LuceneModel
             var searchDoc = new Document
             {
                 new StringField(nameof(org._id), org._id.ToString(), Field.Store.YES),
-                new StringField(InMemoryLuceneSearch.DOC_TYPE_FIELD, typeof(Organization).Name, Field.Store.YES),
+                new StringField(InMemoryLuceneSearch.DOC_TYPE_FIELD, typeof(Organization).Name.ToLowerInvariant(), Field.Store.YES),
 
                 new TextField(nameof(org.url), org.url ?? InMemoryLuceneSearch.EMPTY_VALUE, Field.Store.NO),
-                new TextField(nameof(org.external_id), org.external_id?.ToString("N") ?? InMemoryLuceneSearch.EMPTY_VALUE, Field.Store.NO),
+                new StringField(nameof(org.external_id), org.external_id?.ToString().ToLowerInvariant() ?? InMemoryLuceneSearch.EMPTY_VALUE, Field.Store.NO),
                 new TextField(nameof(org.name), org.name ?? InMemoryLuceneSearch.EMPTY_VALUE, Field.Store.NO),
                 new TextField(nameof(org.details), org.details ?? InMemoryLuceneSearch.EMPTY_VALUE, Field.Store.NO),
                 new StringField(nameof(org.shared_tickets), org.shared_tickets.ToString().ToLowerInvariant(), Field.Store.NO),
@@ -42,6 +42,7 @@ namespace TicketSearch.LuceneModel
 
                 new TextField(InMemoryLuceneSearch.GLOBAL_SEARCH_FIELD, org.details ?? "", Field.Store.NO),
                 new TextField(InMemoryLuceneSearch.GLOBAL_SEARCH_FIELD, org.name ?? "", Field.Store.NO),
+                new TextField(InMemoryLuceneSearch.GLOBAL_SEARCH_FIELD, org.external_id?.ToString().ToLowerInvariant() ?? "", Field.Store.NO)
             };
 
             if ((org.tags ?? new List<string>()).Any())
@@ -54,12 +55,12 @@ namespace TicketSearch.LuceneModel
             }
             else
             {
-                searchDoc.Add(new StringField(nameof(org.tags), InMemoryLuceneSearch.EMPTY_VALUE, Field.Store.NO));
+                searchDoc.Add(new TextField(nameof(org.tags), InMemoryLuceneSearch.EMPTY_VALUE, Field.Store.NO));
             }
 
             foreach (var domain in org.domain_names ?? new List<string>())
             {
-                searchDoc.Add(new TextField(nameof(org.domain_names), domain, Field.Store.NO));
+                searchDoc.Add(new StringField(nameof(org.domain_names), domain, Field.Store.NO));
                 searchDoc.Add(new TextField(InMemoryLuceneSearch.GLOBAL_SEARCH_FIELD, domain, Field.Store.NO));
             }
 
