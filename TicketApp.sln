@@ -15,7 +15,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{80331C88-440
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{45C8614F-B9B0-4BFE-B236-EC173631B171}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicketApp.IntegrationTests", "test\TicketApp.IntegrationTests\TicketApp.IntegrationTests.csproj", "{143FEC9C-94A6-498A-A5CE-8E51157F4E06}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TicketApi.IntegrationTests", "test\TicketApi.IntegrationTests\TicketApi.IntegrationTests.csproj", "{143FEC9C-94A6-498A-A5CE-8E51157F4E06}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicketBusinessLogic", "src\TicketBusinessLogic\TicketBusinessLogic.csproj", "{167649FB-5192-44F6-8344-841016B95114}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicketBusinessLogic.UnitTests", "test\TicketBusinessLogic.UnitTests\TicketBusinessLogic.UnitTests.csproj", "{D1190C69-7AFD-40D4-AEED-7C08B127ADC1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicketStorage.InMemory.UnitTests", "test\TicketStorage.InMemory.UnitTests\TicketStorage.InMemory.UnitTests.csproj", "{AF9B926B-0B52-46E6-84C6-4467D9F1CCEB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicketSearch.Lucene.UnitTests", "test\TicketSearch.Lucene.UnitTests\TicketSearch.Lucene.UnitTests.csproj", "{FF4F5F2F-77A8-403F-A547-BE78413F86A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,6 +51,22 @@ Global
 		{143FEC9C-94A6-498A-A5CE-8E51157F4E06}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{143FEC9C-94A6-498A-A5CE-8E51157F4E06}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{143FEC9C-94A6-498A-A5CE-8E51157F4E06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{167649FB-5192-44F6-8344-841016B95114}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{167649FB-5192-44F6-8344-841016B95114}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{167649FB-5192-44F6-8344-841016B95114}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{167649FB-5192-44F6-8344-841016B95114}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1190C69-7AFD-40D4-AEED-7C08B127ADC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1190C69-7AFD-40D4-AEED-7C08B127ADC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1190C69-7AFD-40D4-AEED-7C08B127ADC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1190C69-7AFD-40D4-AEED-7C08B127ADC1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF9B926B-0B52-46E6-84C6-4467D9F1CCEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF9B926B-0B52-46E6-84C6-4467D9F1CCEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF9B926B-0B52-46E6-84C6-4467D9F1CCEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF9B926B-0B52-46E6-84C6-4467D9F1CCEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF4F5F2F-77A8-403F-A547-BE78413F86A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF4F5F2F-77A8-403F-A547-BE78413F86A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF4F5F2F-77A8-403F-A547-BE78413F86A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF4F5F2F-77A8-403F-A547-BE78413F86A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,6 +77,10 @@ Global
 		{561E9001-5640-4E5A-B13D-F8E13D99C824} = {80331C88-4401-4A34-8371-2A64EBF82626}
 		{6FAD82AE-1BB9-4918-BD94-DBF39E74D0B8} = {80331C88-4401-4A34-8371-2A64EBF82626}
 		{143FEC9C-94A6-498A-A5CE-8E51157F4E06} = {45C8614F-B9B0-4BFE-B236-EC173631B171}
+		{167649FB-5192-44F6-8344-841016B95114} = {80331C88-4401-4A34-8371-2A64EBF82626}
+		{D1190C69-7AFD-40D4-AEED-7C08B127ADC1} = {45C8614F-B9B0-4BFE-B236-EC173631B171}
+		{AF9B926B-0B52-46E6-84C6-4467D9F1CCEB} = {45C8614F-B9B0-4BFE-B236-EC173631B171}
+		{FF4F5F2F-77A8-403F-A547-BE78413F86A3} = {45C8614F-B9B0-4BFE-B236-EC173631B171}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1DC4634D-7EFC-499C-82EC-D830BE8E7281}

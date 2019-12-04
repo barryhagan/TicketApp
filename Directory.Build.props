@@ -1,0 +1,11 @@
+<Project>
+  <PropertyGroup>
+    <Company>BarryCo</Company>
+    <Product>TicketApp</Product>
+    <Copyright>Copyright © BarryCo LLC</Copyright>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <InformationalVersion>DeveloperBuild</InformationalVersion>
+    <NeutralLanguage>en</NeutralLanguage>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+</Project>

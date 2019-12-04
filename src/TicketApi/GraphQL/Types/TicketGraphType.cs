@@ -1,13 +1,14 @@
 ﻿using GraphQL.DataLoader;
 using GraphQL.Types;
 using System;
+using TicketBusinessLogic;
 using TicketCore.Model;
 
 namespace TicketApi.GraphQL.Types
 {
-    public class TicketGraphType : ModelBaseGraphType<Ticket, Guid>
+    internal class TicketGraphType : ModelBaseGraphType<Ticket, Guid>
     {
-        public TicketGraphType(IDataLoaderContextAccessor dataLoader, TicketBusinessLogic logic) : base(dataLoader, logic)
+        public TicketGraphType(IDataLoaderContextAccessor dataLoader, BusinessLogic logic) : base(dataLoader, logic)
         {
             Name = "Ticket";
 

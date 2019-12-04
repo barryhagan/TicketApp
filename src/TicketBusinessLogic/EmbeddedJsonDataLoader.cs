@@ -7,18 +7,18 @@ using TicketCore.Exceptions;
 using TicketCore.Interfaces;
 using TicketCore.Model;
 
-namespace TicketApi
+namespace TicketBusinessLogic
 {
     public class EmbeddedJsonDataLoader : IDataLoader
     {
-        private const string ORG_DATA = "TicketApi.SeedData.organizations.json";
-        private const string TICKET_DATA = "TicketApi.SeedData.tickets.json";
-        private const string USER_DATA = "TicketApi.SeedData.users.json";
+        private const string ORG_DATA = "TicketBusinessLogic.SeedData.organizations.json";
+        private const string TICKET_DATA = "TicketBusinessLogic.SeedData.tickets.json";
+        private const string USER_DATA = "TicketBusinessLogic.SeedData.users.json";
 
         public IEnumerable<T> LoadObjects<T>()
         {
             var serializer = new JsonSerializer();
-            var assembly = typeof(TicketBusinessLogic).GetTypeInfo().Assembly;
+            var assembly = typeof(EmbeddedJsonDataLoader).GetTypeInfo().Assembly;
 
             var stream = assembly.GetManifestResourceStream(GetEmbeddedResourceName<T>());
             if (stream != null)

@@ -1,15 +1,16 @@
 ﻿using GraphQL.Types;
-using TicketCore.Model;
+using TicketCore.Dto;
 
 namespace TicketApi.GraphQL.Types
 {
-    public class SearchInputType : InputObjectGraphType<SearchInput>
+    internal class SearchInputType : InputObjectGraphType<SearchInput>
     {
         public SearchInputType()
         {
             Name = "SearchInput";
-            Field(x => x.search);
-            Field(x => x.docType, nullable: true);
+
+            Field(x => x.Search);
+            Field(x => x.DocType, nullable: true);
         }
     }
 }

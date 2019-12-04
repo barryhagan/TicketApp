@@ -1,44 +1,45 @@
 ﻿using GraphQL.DataLoader;
 using GraphQL.Server.Authorization.AspNetCore;
 using GraphQL.Types;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TicketApi.GraphQL.Types;
+using TicketBusinessLogic;
+using TicketCore.Dto;
 using TicketCore.Model;
 
 namespace TicketApi.GraphQL.Schemas
 {
-    public class TicketQuery : ObjectGraphType
+    internal class TicketGraphQuery : ObjectGraphType
     {
         private readonly IDataLoaderContextAccessor dataLoader;
-        private readonly TicketBusinessLogic logic;
-        private readonly ILogger<TicketQuery> logger;
+        private readonly BusinessLogic logic;
 
-        public TicketQuery(IDataLoaderContextAccessor dataLoader, TicketBusinessLogic logic, ILogger<TicketQuery> logger)
+        public TicketGraphQuery(IDataLoaderContextAccessor dataLoader, BusinessLogic logic)
         {
             Name = "Query";
 
             this.dataLoader = dataLoader;
             this.logic = logic;
-            this.logger = logger;
 
-            this.AuthorizeWith(TicketSchema.GraphQLAuthPolicyName);
+            this.AuthorizeWith(TicketGraphSchema.GraphQLAuthPolicyName);
 
             Field<SearchSchemaGraphType>()
                 .Name("searchSchema")
                 .ResolveAsync(async ctx =>
                 {
-                    var schema = new Dictionary<string, List<string>>();
-                    schema[typeof(Organization).Name] = await logic.GetSearchFields<Organization>();
-                    schema[typeof(Ticket).Name] = await logic.GetSearchFields<Ticket>();
-                    schema[typeof(User).Name] = await logic.GetSearchFields<User>();
+                    var schema = new Dictionary<string, List<string>>
+                    {
+                        [typeof(Organization).Name] = await logic.GetSearchFieldsAsync<Organization>(),
+                        [typeof(Ticket).Name] = await logic.GetSearchFieldsAsync<Ticket>(),
+                        [typeof(User).Name] = await logic.GetSearchFieldsAsync<User>()
+                    };
                     return schema;
                 });
 
-            Field<GlobalSearchResultGraphType>()
+            Field<SearchResultSetGraphType>()
                 .Name("globalSearch")
                 .Argument<NonNullGraphType<SearchInputType>>("input", "The search terms and filters.")
                 .ResolveAsync(async ctx =>

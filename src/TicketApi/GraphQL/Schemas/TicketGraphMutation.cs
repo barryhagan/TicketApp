@@ -1,16 +1,15 @@
 ﻿using GraphQL.Server.Authorization.AspNetCore;
 using GraphQL.Types;
-using Microsoft.Extensions.Logging;
 
 namespace TicketApi.GraphQL.Schemas
 {
-    public class TicketMutation : ObjectGraphType
+    internal class TicketGraphMutation : ObjectGraphType
     {       
-        public TicketMutation(ILogger<TicketMutation> logger)
+        public TicketGraphMutation()
         {
             Name = "Mutation";
 
-            this.AuthorizeWith(TicketSchema.GraphQLAuthPolicyName);
+            this.AuthorizeWith(TicketGraphSchema.GraphQLAuthPolicyName);
 
             //TODO : Add actual mutation code when required
             Field<BooleanGraphType>()

@@ -9,7 +9,7 @@ namespace TicketSearch.Lucene
     /// <summary>
     /// Custom analyzer for case insensitive indexing of keyword fields (no tokenizing)
     /// </summary>
-    public class LowercaseKeywordAnalyzer : Analyzer
+    internal class LowercaseKeywordAnalyzer : Analyzer
     {
         private readonly LuceneVersion version;
         public LowercaseKeywordAnalyzer(LuceneVersion version)

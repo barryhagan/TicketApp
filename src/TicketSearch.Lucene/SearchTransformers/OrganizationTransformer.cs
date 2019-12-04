@@ -3,14 +3,16 @@ using System.Linq;
 using Lucene.Net.Documents;
 using TicketCore.Model;
 
-namespace TicketSearch.Lucene.SearchModel
+namespace TicketSearch.Lucene.SearchTransformers
 {
-    internal static class OrganizationDoc
+    internal class OrganizationTransformer : ISearchTransformer<Organization>
     {
-        static OrganizationDoc()
+        private static readonly List<string> searchFields;
+
+        static OrganizationTransformer()
         {
             var org = new Organization();
-            SearchFields = new List<string>
+            searchFields = new List<string>
                 {
                     nameof(org._id),
                     nameof(org.url),
@@ -24,9 +26,9 @@ namespace TicketSearch.Lucene.SearchModel
                 };
         }
 
-        public static List<string> SearchFields { get; private set; }
+        public List<string> SearchFields => searchFields;
 
-        public static Document GetSearchDoc(Organization org)
+        public Document Transform(Organization org)
         {
             var searchDoc = new Document
             {
@@ -67,6 +69,5 @@ namespace TicketSearch.Lucene.SearchModel
 
             return searchDoc;
         }
-
     }
 }

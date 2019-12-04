@@ -8,6 +8,9 @@ using TicketCore.Model;
 
 namespace TicketStorage.InMemory
 {
+    /// <summary>
+    /// A simple in-memory data store using concurrent dictionaries keyed by document ids
+    /// </summary>
     public class InMemoryTicketStore : ITicketStore
     {
         private readonly ConcurrentDictionary<string, ConcurrentDictionary<dynamic, dynamic>> dataStore = new ConcurrentDictionary<string, ConcurrentDictionary<dynamic, dynamic>>();
@@ -31,25 +34,13 @@ namespace TicketStorage.InMemory
             var typeStore = LoadTypeStore(key);
 
             IList<T> objList = new List<T>();
-            var missingList = new List<TKey>();
 
             foreach (var id in ids)
             {
-                if (!typeStore.TryGetValue(id, out var obj))
-                {
-                    missingList.Add(id);
-                }
-                else
+                if (typeStore.TryGetValue(id, out var obj))
                 {
                     objList.Add(obj as T);
                 }
-            }
-
-            if (missingList.Any())
-            {
-                //TODO : throw on missing items? this data has inconsistencies (e.g. organization_id:555)
-                //throw new AggregateException($"Unable to find all of the requested objects missing:{string.Join(",", missingList)}.",
-                //    missingList.Select(i => new ObjectNotFoundException<T, TKey>(i, $"The {key} does not exist.")));
             }
 
             return Task.FromResult(objList);

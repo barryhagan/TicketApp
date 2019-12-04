@@ -203,7 +203,7 @@ const SearchTerms = ({ scope, schema, handleTermClick }) => {
   }
   return (
     <div>
-      <h5>Search Terms</h5>
+      <h5>{scope ? scope : "Global"} Search Terms</h5>
       <p>(click to use)</p>
       <ul>
         {_.map(terms, (term, idx) => (

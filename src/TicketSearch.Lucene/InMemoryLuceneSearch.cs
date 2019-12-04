@@ -10,17 +10,18 @@ using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Store;
 using Lucene.Net.Search;
 using Lucene.Net.Util;
-using TicketCore.Exceptions;
+using TicketCore.Dto;
 using TicketCore.Interfaces;
 using TicketCore.Model;
-using TicketSearch.Lucene.SearchModel;
+using TicketSearch.Lucene.SearchTransformers;
 
 namespace TicketSearch.Lucene
 {
     public class InMemoryLuceneSearch : ITicketSearch
     {
         private const LuceneVersion LUCENE_VERSION = LuceneVersion.LUCENE_48;
-        public const string GLOBAL_SEARCH_FIELD = "global";
+        public const string GLOBAL_SEARCH_FIELD = "_global";
+        public const string DOC_ID_FIELD = "_id";
         public const string DOC_TYPE_FIELD = "_doc_type";
         public const string EMPTY_VALUE = "ISNULL";
 
@@ -48,43 +49,30 @@ namespace TicketSearch.Lucene
             indexWriter = new IndexWriter(indexDirectory, indexConfig);
         }
 
-        public Task AddDocuments<T, TKey>(IEnumerable<T> docs) where T : ModelBase<TKey>
+        public Task AddDocumentsAsync<T, TKey>(IEnumerable<T> docs) where T : ModelBase<TKey>
         {
-            switch (typeof(T).Name)
-            {
-                case nameof(Organization):
-                    indexWriter.AddDocuments(docs.Select(d => OrganizationDoc.GetSearchDoc(d as Organization)));
-                    break;
-                case nameof(User):
-                    indexWriter.AddDocuments(docs.Select(d => UserDoc.GetSearchDoc(d as User)));
-                    break;
-                case nameof(Ticket):
-                    indexWriter.AddDocuments(docs.Select(d => TicketDoc.GetSearchDoc(d as Ticket)));
-                    break;
-                default:
-                    throw new TicketAppException($"Unable to index unknown document type ${typeof(T).Name}");
-            }
-
+            var transformer = TransformerFactory.LoadTransformer<T>();
+            indexWriter.AddDocuments(docs.Select(doc => transformer.Transform(doc)));
             indexWriter.Flush(false, false);
             return Task.CompletedTask;
         }
 
-        public Task<List<SearchHit>> Search(SearchInput searchInput)
+        public Task<List<SearchHit>> SearchAsync(SearchInput searchInput)
         {
             var searchBuilder = new StringBuilder();
 
-            if (!string.IsNullOrWhiteSpace(searchInput.search))
+            if (!string.IsNullOrWhiteSpace(searchInput.Search))
             {
-                searchBuilder.Append(searchInput.search.Replace("\"\"", EMPTY_VALUE));
+                searchBuilder.Append(searchInput.Search.Replace("\"\"", EMPTY_VALUE));
             }
 
-            if (!string.IsNullOrWhiteSpace(searchInput.docType))
+            if (!string.IsNullOrWhiteSpace(searchInput.DocType))
             {
                 if (searchBuilder.Length > 0)
                 {
                     searchBuilder.Append(" AND ");
                 }
-                searchBuilder.Append($"{DOC_TYPE_FIELD}:{searchInput.docType}");
+                searchBuilder.Append($"{DOC_TYPE_FIELD}:{searchInput.DocType}");
             }
 
             if (searchBuilder.Length == 0)
@@ -92,19 +80,17 @@ namespace TicketSearch.Lucene
                 return Task.FromResult(new List<SearchHit>());
             }
 
-            var indexReader = indexWriter.GetReader(false); // Change this if documents will be deleted in the future
-            var searcher = new IndexSearcher(indexReader);
+            var searcher = new IndexSearcher(indexWriter.GetReader(false));
             var queryParser = new QueryParser(LUCENE_VERSION, GLOBAL_SEARCH_FIELD, analyzer);
-            var query = queryParser.Parse(searchBuilder.ToString());
-           
-            var searchHits = searcher.Search(query, 100);
+            var query = queryParser.Parse(searchBuilder.ToString());           
+            var searchHits = searcher.Search(query, 200);
 
             var results = new List<SearchHit>();
 
             foreach (var hit in searchHits.ScoreDocs)
             {
                 var doc = searcher.Doc(hit.Doc);
-                var docId = doc.GetField("_id").GetStringValue();
+                var docId = doc.GetField(DOC_ID_FIELD).GetStringValue();
                 var docType = doc.GetField(DOC_TYPE_FIELD).GetStringValue();
 
                 results.Add(new SearchHit
@@ -118,19 +104,10 @@ namespace TicketSearch.Lucene
             return Task.FromResult(results);
         }
 
-        public Task<List<string>> GetSearchFields<T>()
+        public Task<List<string>> GetSearchFieldsAsync<T>()
         {
-            switch (typeof(T).Name)
-            {
-                case nameof(Organization):
-                    return Task.FromResult(OrganizationDoc.SearchFields);
-                case nameof(Ticket):
-                    return Task.FromResult(TicketDoc.SearchFields);
-                case nameof(User):
-                    return Task.FromResult(UserDoc.SearchFields);
-                default:
-                    throw new TicketAppException($"Search is not available for {typeof(T).Name}");
-            }
+            var transformer = TransformerFactory.LoadTransformer<T>();
+            return Task.FromResult(transformer.SearchFields);
         }
     }
 }

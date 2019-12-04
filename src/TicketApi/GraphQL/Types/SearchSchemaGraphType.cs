@@ -4,7 +4,7 @@ using TicketCore.Model;
 
 namespace TicketApi.GraphQL.Types
 {
-    public class SearchSchemaGraphType : ObjectGraphType<Dictionary<string, List<string>>>
+    internal class SearchSchemaGraphType : ObjectGraphType<Dictionary<string, List<string>>>
     {
         public SearchSchemaGraphType()
         {

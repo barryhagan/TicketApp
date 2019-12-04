@@ -74,11 +74,17 @@ class User extends Component {
             </DataGridRow>
             <DataGridRow>
               <DataGridItem>
-                <Link to={`/organization/${user.organization.id}`}>
-                  organization
-                </Link>
+                {user.organization ? (
+                  <Link to={`/organization/${user.organization.id}`}>
+                    organization
+                  </Link>
+                ) : (
+                  "organization"
+                )}
               </DataGridItem>
-              <DataGridItemTen>{user.organization.name}</DataGridItemTen>
+              <DataGridItemTen>
+                {user.organization ? user.organization.name : "--"}
+              </DataGridItemTen>
             </DataGridRow>
             <DataGridRow>
               <DataGridItem>phone</DataGridItem>

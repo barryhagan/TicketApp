@@ -3,14 +3,16 @@ using System.Linq;
 using Lucene.Net.Documents;
 using TicketCore.Model;
 
-namespace TicketSearch.Lucene.SearchModel
+namespace TicketSearch.Lucene.SearchTransformers
 {
-    internal static class UserDoc
+    internal class UserTransformer : ISearchTransformer<User>
     {
-        static UserDoc()
+        private static readonly List<string> searchFields;
+
+        static UserTransformer()
         {
             var user = new User();
-            SearchFields = new List<string>
+            searchFields = new List<string>
                 {
                     nameof(user._id),
                     nameof(user.url),
@@ -34,9 +36,9 @@ namespace TicketSearch.Lucene.SearchModel
                 };
         }
 
-        public static List<string> SearchFields { get; private set; }
+        public List<string> SearchFields => searchFields;
 
-        public static Document GetSearchDoc(User user)
+        public Document Transform(User user)
         {
             var searchDoc = new Document
             {
@@ -56,9 +58,9 @@ namespace TicketSearch.Lucene.SearchModel
                 new StringField(nameof(user.created_at), DateTools.DateToString(user.created_at.DateTime, DateTools.Resolution.MILLISECOND), Field.Store.NO),
                 new StringField(nameof(user.phone), user.phone ?? InMemoryLuceneSearch.EMPTY_VALUE, Field.Store.NO),
                 new TextField(nameof(user.signature), user.signature ?? InMemoryLuceneSearch.EMPTY_VALUE, Field.Store.NO),
-                new StringField(nameof(user.organization_id), user.organization_id.ToString(), Field.Store.NO),
+                new StringField(nameof(user.organization_id), user.organization_id.ToString() , Field.Store.NO),
                 new StringField(nameof(user.suspended), user.suspended.ToString().ToLowerInvariant(), Field.Store.NO),
-                new StringField(nameof(user.role), user.role?.ToLowerInvariant(), Field.Store.NO),
+                new StringField(nameof(user.role), user.role?.ToLowerInvariant() ?? InMemoryLuceneSearch.EMPTY_VALUE, Field.Store.NO),
 
                 new TextField(InMemoryLuceneSearch.GLOBAL_SEARCH_FIELD, user.name ?? "", Field.Store.NO),
                 new TextField(InMemoryLuceneSearch.GLOBAL_SEARCH_FIELD, user.alias ?? "", Field.Store.NO),

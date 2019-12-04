@@ -3,13 +3,13 @@ using System;
 
 namespace TicketApi.GraphQL.Schemas
 {
-    public class TicketSchema : Schema
+    internal class TicketGraphSchema : Schema
     {
         public const string GraphQLAuthPolicyName = "GraphQLAuthorized";
 
-        public TicketSchema(
-            TicketQuery query,
-            TicketMutation mutation,
+        public TicketGraphSchema(
+            TicketGraphQuery query,
+            TicketGraphMutation mutation,
             IServiceProvider provider)
             : base(provider)
         {

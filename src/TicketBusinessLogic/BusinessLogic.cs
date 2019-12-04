@@ -1,21 +1,22 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using TicketCore.Dto;
 using TicketCore.Interfaces;
 using TicketCore.Model;
 
-namespace TicketApi
+namespace TicketBusinessLogic
 {
-    public class TicketBusinessLogic
+    public class BusinessLogic
     {
         private readonly ITicketStore store;
         private readonly ITicketSearch search;
-        private readonly ILogger<TicketBusinessLogic> logger;
+        private readonly ILogger<BusinessLogic> logger;
         private readonly IDataLoader dataLoader;
 
-        public TicketBusinessLogic(ITicketStore store, ITicketSearch search, IDataLoader dataLoader, ILogger<TicketBusinessLogic> logger)
+        public BusinessLogic(ITicketStore store, ITicketSearch search, IDataLoader dataLoader, ILogger<BusinessLogic> logger)
         {
             this.store = store;
             this.search = search;
@@ -23,7 +24,7 @@ namespace TicketApi
             this.dataLoader = dataLoader;
         }
 
-        public async Task InitializeData()
+        public async Task InitializeDataAsync()
         {
             if (store.Query<User, int>().Any() || store.Query<Organization, int>().Any() || store.Query<Ticket, Guid>().Any())
             {
@@ -33,17 +34,17 @@ namespace TicketApi
 
             var orgs = dataLoader.LoadObjects<Organization>().ToList();
             await store.StoreAsync<Organization, int>(orgs);
-            await search.AddDocuments<Organization, int>(orgs);
+            await search.AddDocumentsAsync<Organization, int>(orgs);
             logger.LogInformation($"Loaded {orgs.Count} organizations");
 
             var users = dataLoader.LoadObjects<User>().ToList();
             await store.StoreAsync<User, int>(users);
-            await search.AddDocuments<User, int>(users);
+            await search.AddDocumentsAsync<User, int>(users);
             logger.LogInformation($"Loaded {users.Count} users");
 
             var tickets = dataLoader.LoadObjects<Ticket>().ToList();
             await store.StoreAsync<Ticket, Guid>(tickets);
-            await search.AddDocuments<Ticket, Guid>(tickets);
+            await search.AddDocumentsAsync<Ticket, Guid>(tickets);
             logger.LogInformation($"Loaded {tickets.Count} tickets");
         }
 
@@ -57,28 +58,33 @@ namespace TicketApi
             return store.Query<T, TKey>();
         }
 
-        public async Task<List<string>> GetSearchFields<T>()
+        public async Task<List<string>> GetSearchFieldsAsync<T>()
         {
-            return await search.GetSearchFields<T>();
+            return await search.GetSearchFieldsAsync<T>();
         }
 
-        public async Task<GlobalSearchResult> SearchAsync(SearchInput input)
+        public async Task<SearchResultSet> SearchAsync(SearchInput input)
         {
-            var searchHits = await search.Search(input);
+            var searchHits = await search.SearchAsync(input);
+            var searchResults = new SearchResultSet();
 
-            // TODO: optimize for O(n) instead of O(3)
-            var userIds = searchHits.Where(h => h.DocType == typeof(User).Name.ToLowerInvariant()).Select(u => Convert.ToInt32(u.DocId)).ToList();
-            var ticketIds = searchHits.Where(h => h.DocType == typeof(Ticket).Name.ToLowerInvariant()).Select(u => Guid.Parse(u.DocId)).ToList();
-            var orgIds = searchHits.Where(h => h.DocType == typeof(Organization).Name.ToLowerInvariant()).Select(u => Convert.ToInt32(u.DocId)).ToList();
-
-            var dataResult = new GlobalSearchResult
+            foreach (var hit in searchHits)
             {
-                users = (await store.LoadManyAsync<User, int>(userIds)).ToList(),
-                tickets = (await store.LoadManyAsync<Ticket, Guid>(ticketIds)).ToList(),
-                organizations = (await store.LoadManyAsync<Organization, int>(orgIds)).ToList()
-            };
+                switch (hit.DocType)
+                {
+                    case "user":
+                        searchResults.Users.Add(Convert.ToInt32(hit.DocId), hit.Score);
+                        break;
+                    case "organization":
+                        searchResults.Organizations.Add(Convert.ToInt32(hit.DocId), hit.Score);
+                        break;
+                    case "ticket":
+                        searchResults.Tickets.Add(Guid.Parse(hit.DocId), hit.Score);
+                        break;
+                }
+            }
 
-            return dataResult;
+            return searchResults;
         }
     }
 }

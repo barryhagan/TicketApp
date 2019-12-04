@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TicketCore.Model
+﻿
+namespace TicketCore.Dto
 {
     public class SearchHit
     {

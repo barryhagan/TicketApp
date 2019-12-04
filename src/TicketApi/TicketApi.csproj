@@ -7,17 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="SeedData\organizations.json" />
-    <Content Remove="SeedData\tickets.json" />
-    <Content Remove="SeedData\users.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="SeedData\tickets.json" />
-    <EmbeddedResource Include="SeedData\users.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="GraphQL.Server.Authorization.AspNetCore" Version="3.5.0-alpha0027" />
     <PackageReference Include="GraphQL.Server.Core" Version="3.5.0-alpha0027" />
     <PackageReference Include="GraphQL.Server.Transports.AspNetCore" Version="3.5.0-alpha0027" />
@@ -28,13 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TicketBusinessLogic\TicketBusinessLogic.csproj" />
     <ProjectReference Include="..\TicketCore\TicketCore.csproj" />
     <ProjectReference Include="..\TicketSearch.Lucene\TicketSearch.Lucene.csproj" />
     <ProjectReference Include="..\TicketStorage.InMemory\TicketStorage.InMemory.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="SeedData\organizations.json" />
   </ItemGroup>
 
 </Project>

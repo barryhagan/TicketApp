@@ -1,9 +1,5 @@
 version: '3.5'
 
-networks:
-  app-net:
-    driver: bridge
-
 services:
   ticketapp-demo:
     build:
@@ -14,5 +10,3 @@ services:
       - '5555:80'
     environment:
       ASPNETCORE_ENVIRONMENT: DockerDemo
-    networks:
-      - ticketapp-net

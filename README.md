@@ -9,6 +9,7 @@ This application includes:
 # Just show me the demo!
 - On a machine with docker installed, clone this repository and run:
 > docker-compose up
+- patiently wait for `npm` to do its thing
 - browse to http://localhost:5555 after the container has been built and started.
 
 # Developer setup

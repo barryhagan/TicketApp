@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using TicketApi.GraphQL;
 using TicketApi.GraphQL.Schemas;
+using TicketBusinessLogic;
 using TicketCore;
 using TicketCore.Interfaces;
 using TicketSearch.Lucene;
@@ -53,7 +54,7 @@ namespace TicketApi
             })
             .AddGraphQLAuthorization(options =>
             {
-                options.AddPolicy(TicketSchema.GraphQLAuthPolicyName, p =>
+                options.AddPolicy(TicketGraphSchema.GraphQLAuthPolicyName, p =>
                 {
                     p.RequireAssertion(x => true);
                     // TODO : enable authorization after JWT auth is turned on
@@ -64,20 +65,18 @@ namespace TicketApi
             .AddRelayGraphTypes()
             .AddGraphTypes();
 
-            services.AddSingleton<TicketSchema>();
-            
+            services.AddSingleton<TicketGraphSchema>();
             services.AddSingleton<ITicketStore, InMemoryTicketStore>();
             services.AddSingleton<ITicketSearch, InMemoryLuceneSearch>();
             services.AddSingleton<IDataLoader, EmbeddedJsonDataLoader>();
-
-            services.AddSingleton<TicketBusinessLogic>();
+            services.AddSingleton<BusinessLogic>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();            
+                app.UseDeveloperExceptionPage();
             }
 
             app.UseStaticFiles();
@@ -85,7 +84,7 @@ namespace TicketApi
             app.UseAuthentication();
             app.UseResponseCompression();
 
-            app.UseGraphQL<TicketSchema, TicketGraphQLHttpMiddleware<TicketSchema>>();
+            app.UseGraphQL<TicketGraphSchema, TicketGraphQLHttpMiddleware<TicketGraphSchema>>();
             if (!env.IsProduction())
             {
                 app.UseGraphQLPlayground(new GraphQLPlaygroundOptions());
@@ -104,8 +103,8 @@ namespace TicketApi
             var logger = app.ApplicationServices.GetService<ILogger<Startup>>();
             logger.LogInformation($"Application Version: {RuntimeInfo.ApplicationVersion} {RuntimeInfo.ApplicationBuild}");
 
-            var loader = app.ApplicationServices.GetService<TicketBusinessLogic>();
-            loader.InitializeData().Wait();            
+            var logic = app.ApplicationServices.GetService<BusinessLogic>();
+            var initDataTask = logic.InitializeDataAsync();
         }
     }
 }

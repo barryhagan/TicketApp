@@ -23,20 +23,32 @@ export const actionCreators = {
     }
 
     if (result) {
-      const searchResults = [
-        ..._.map(result.tickets, t => {
-          t.docType = "Ticket";
-          return t;
-        }),
-        ..._.map(result.users, u => {
-          u.docType = "User";
-          return u;
-        }),
-        ..._.map(result.organizations, o => {
-          o.docType = "Organization";
-          return o;
-        })
-      ];
+      const searchResults = _.orderBy(
+        [
+          ..._.map(result.tickets, t => {
+            const scoredTicket = {
+              ...t.item,
+              docType: "Ticket",
+              score: t.score
+            };
+            return scoredTicket;
+          }),
+          ..._.map(result.users, u => {
+            const scoredUser = { ...u.item, docType: "User", score: u.score };
+            return scoredUser;
+          }),
+          ..._.map(result.organizations, o => {
+            const scoredOrg = {
+              ...o.item,
+              docType: "Organization",
+              score: o.score
+            };
+            return scoredOrg;
+          })
+        ],
+        ["score"],
+        ["desc"]
+      );
 
       dispatch({ type: receiveSearchType, searchResults });
     }
