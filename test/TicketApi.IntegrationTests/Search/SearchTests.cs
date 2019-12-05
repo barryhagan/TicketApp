@@ -31,16 +31,28 @@ namespace TicketApi.IntegrationTests.Search
             Assert.Empty(results.globalSearch.organizations);
         }
 
-        [Fact]
-        public async Task can_search_by_empty_email()
+        [Theory]
+        [InlineData("\\\"\\\"")]
+        [InlineData("ISNULL")]
+        public async Task can_search_empty_email_field(string emptySearch)
         {
-            var query = SEARCH_QUERY_FORMAT.Replace("input", "input:{ search:\"email:ISNULL\" }");
+            var query = SEARCH_QUERY_FORMAT.Replace("input", "input:{ search:\"email:" + emptySearch + "\" }");
             var results = await GraphRequestAsync<SearchData>(query);
             Assert.Equal(2, results.globalSearch.users.Count);
             foreach (var user in results.globalSearch.users)
             {
                 Assert.Null(user.item.email);
             }
+        }
+
+        [Fact]
+        public async Task can_perform_global_empty_field_search()
+        {
+            var query = SEARCH_QUERY_FORMAT.Replace("input", "input:{ search:\"ISNULL\" }");
+            var results = await GraphRequestAsync<SearchData>(query);
+            Assert.Equal(3, results.globalSearch.users.Count);
+            Assert.Single(results.globalSearch.tickets);
+            Assert.Single(results.globalSearch.organizations);
         }
 
         private class SearchData

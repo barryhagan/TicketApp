@@ -10,6 +10,7 @@ import {
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import "./NavMenu.css";
+import logo from "./zd.png";
 
 export default class NavMenu extends React.Component {
   constructor(props) {
@@ -34,6 +35,7 @@ export default class NavMenu extends React.Component {
         >
           <Container>
             <NavbarBrand tag={Link} to="/">
+              <img src={logo} alt="Ticket Search" />
               Ticket Search
             </NavbarBrand>
             <NavbarToggler onClick={this.toggle} className="mr-2" />

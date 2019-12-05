@@ -1,0 +1,18 @@
+name: TicketApp CI
+
+on:
+  push:
+    branches:
+    - master
+
+jobs:
+  test-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1    
+    - name: dotnet test
+      run: |
+        dotnet test ./test/TicketBusinessLogic.UnitTests/TicketBusinessLogic.UnitTests.csproj --logger trx
+        dotnet test ./test/TicketStorage.InMemory.UnitTests/TicketStorage.InMemory.UnitTests.csproj --logger trx
+        dotnet test ./test/TicketSearch.Lucene.UnitTests/TicketSearch.Lucene.UnitTests.csproj --logger trx
+        dotnet test ./test/TicketApi.IntegrationTests/TicketApi.IntegrationTests.csproj --logger trx

@@ -7,6 +7,6 @@ services:
       dockerfile: TicketAppDemo.Dockerfile
     container_name: ticketapp-demo
     ports:
-      - '5555:80'
+      - '10443:80'
     environment:
       ASPNETCORE_ENVIRONMENT: DockerDemo

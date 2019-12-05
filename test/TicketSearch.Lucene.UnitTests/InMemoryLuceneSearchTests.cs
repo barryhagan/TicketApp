@@ -48,7 +48,7 @@ namespace TicketSearch.Lucene.UnitTests
             Assert.Equal("10", idHit.Single().DocId);
             Assert.Equal("user", idHit.Single().DocType);
 
-            var emailHit = await search.SearchAsync(new SearchInput { DocType = "User", Search = "email:\"test11@local\"" });
+            var emailHit = await search.SearchAsync(new SearchInput { DocType = "User", Search = "email:test11@localhost" });
             Assert.Single(emailHit);
             Assert.Equal("11", emailHit.Single().DocId);
             Assert.Equal("user", emailHit.Single().DocType);

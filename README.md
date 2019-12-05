@@ -1,20 +1,36 @@
 # TicketApp
 
-A demonstration of a basic application to search help desk tickets.
+Demonstration of a basic help desk search application.
 
 This application includes:
-- A GraphQL api written in C# and running dotnetcore 2.2
-- A React.js sample front end application
+- A GraphQL API written in C# that runs on dotnet core 2.2
+  - An in-memory data persistence layer
+  - An in-memory Lucene search engine
+  - An embedded JSON data source to load demonstration data
+- A React.js + Redux sample front end web application
 
-# Just show me the demo!
-- On a machine with docker installed, clone this repository and run:
-> docker-compose up
-- patiently wait for `npm` to do its thing
-- browse to http://localhost:5555 after the container has been built and started.
+# Run with Docker
+- Prerequisites
+  - a recent version of [Docker](https://www.docker.com/products/docker-desktop) and [Docker Compose](https://docs.docker.com/compose/install/)
+- Clone this repository
+- From the root of the repository run `docker-compose up`
+- Browse to http://localhost:10443 after Docker Compose has built and started the container.  If port 10443 is already in use on your local machine, edit the docker-compose.yml file and change the exposed container port.
 
 # Developer setup
-- Install the dotnetcore 2.2 SDK if it is not already on you local machine https://dotnet.microsoft.com/download/dotnet-core/2.2
+- Prerequisites
+  - a recent version of [npm](https://www.npmjs.com/get-npm)
+  - [.Net Core 2.2 SDK](https://dotnet.microsoft.com/download/dotnet-core/2.2)
 - Clone this repository
-
+- Use your favorite IDE to start or debug the application.
+  - Visual Studio 2019 or 2017
+    - Open TicketApp.sln and hit F5 or Ctrl+F5
+  - Visual Studio Code and other IDEs
+    - Open a terminal in /src/TicketApi/ReactApp and run `npm i`
+    - Open a terminal in the repository root and run `dotnet start`
+- Browse to http://localhost:34401 after the application has started.  If port 34401 is already in use on your local machine, edit the appsettings.Development.json file and change the configured Kestrel HTTP port.
+    
+# Continuous integration and testing
+- A GitHub action is configured to run unit and integration tests on any push to the master branch. [View the action results](https://github.com/barryhagan/TicketApp/actions)
+- You can run tests locally by running `dotnet test` from the repository root
 
 

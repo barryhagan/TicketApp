@@ -127,7 +127,8 @@ class Search extends Component {
             </div>
           ) : errors ? (
             <WarningText>
-              Unable to complete your search. Please check the search syntax.
+              Unable to complete your search. Please check your search syntax.
+              You may need to quote or escape complex terms.
             </WarningText>
           ) : lastSearch !== null ? (
             <ResultText>Sorry, there are no matching records.</ResultText>
@@ -206,7 +207,7 @@ const SearchTerms = ({ scope, schema, handleTermClick }) => {
       <h5>{scope ? scope : "Global"} Search Terms</h5>
       <p>(click to use)</p>
       <ul>
-        {_.map(terms, (term, idx) => (
+        {_.map(terms.sort(), (term, idx) => (
           <li key={`term_${idx}`} onClick={() => handleTermClick(term)}>
             {term}
           </li>

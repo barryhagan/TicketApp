@@ -42,7 +42,7 @@
     const data = await this.getGraphQlData(
       "{ globalSearch(input:" +
         input +
-        ") { organizations { score item {id details external_id name tags } } tickets { score item { id subject via status external_id tags via priority type organization { name } } }  users { score item { id external_id name alias email created_at tags } } } } "
+        ") { organizations {score item{id details external_id name tags}} tickets {score item{id subject via status external_id tags via priority type organization {name} }}  users {score item { id external_id name alias email created_at tags} } } } "
     );
     return data.globalSearch;
   }

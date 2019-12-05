@@ -14,6 +14,7 @@ using TicketCore.Dto;
 using TicketCore.Interfaces;
 using TicketCore.Model;
 using TicketSearch.Lucene.SearchTransformers;
+using System.Text.RegularExpressions;
 
 namespace TicketSearch.Lucene
 {
@@ -23,7 +24,7 @@ namespace TicketSearch.Lucene
         public const string GLOBAL_SEARCH_FIELD = "_global";
         public const string DOC_ID_FIELD = "_id";
         public const string DOC_TYPE_FIELD = "_doc_type";
-        public const string EMPTY_VALUE = "ISNULL";
+        public const string EMPTY_VALUE = "_is_null_value_";
 
         private readonly IndexWriter indexWriter;
         private readonly PerFieldAnalyzerWrapper analyzer;
@@ -37,7 +38,6 @@ namespace TicketSearch.Lucene
                 { "alias", new StandardAnalyzer(LUCENE_VERSION)},
                 { "description", new StandardAnalyzer(LUCENE_VERSION)},
                 { "details", new StandardAnalyzer(LUCENE_VERSION)},
-                { "email", new StandardAnalyzer(LUCENE_VERSION)},
                 { "name", new StandardAnalyzer(LUCENE_VERSION) },
                 { "signature", new StandardAnalyzer(LUCENE_VERSION)},
                 { "subject", new StandardAnalyzer(LUCENE_VERSION)},
@@ -63,7 +63,8 @@ namespace TicketSearch.Lucene
 
             if (!string.IsNullOrWhiteSpace(searchInput.Search))
             {
-                searchBuilder.Append(searchInput.Search.Replace("\"\"", EMPTY_VALUE));
+                // Handle aliasing for empty field searches
+                searchBuilder.Append(Regex.Replace(searchInput.Search, "\"\"|ISNULL", EMPTY_VALUE));
             }
 
             if (!string.IsNullOrWhiteSpace(searchInput.DocType))

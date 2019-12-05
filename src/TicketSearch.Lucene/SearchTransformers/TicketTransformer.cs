@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Lucene.Net.Documents;
 using TicketCore.Model;
 
 namespace TicketSearch.Lucene.SearchTransformers
 {
-    internal class TicketTransformer : ISearchTransformer<Ticket>
+    internal class TicketTransformer : TransformerBase, ISearchTransformer<Ticket>
     {
         private static readonly List<string> searchFields;
 
@@ -33,48 +32,36 @@ namespace TicketSearch.Lucene.SearchTransformers
                 };
         }
 
-        public List<string> SearchFields => searchFields;
+        public override List<string> SearchFields => searchFields;
 
         public Document Transform(Ticket ticket)
         {
             var searchDoc = new Document
             {
-                new StringField(nameof(ticket._id), ticket._id.ToString().ToLowerInvariant(), Field.Store.YES),
-                new StringField(InMemoryLuceneSearch.DOC_TYPE_FIELD, typeof(Ticket).Name.ToLowerInvariant(), Field.Store.YES),
+                new StringField(nameof(ticket._id), NormalizeForIndex(ticket._id), Field.Store.YES),
+                new StringField(InMemoryLuceneSearch.DOC_TYPE_FIELD, NormalizeForIndex(typeof(Ticket).Name), Field.Store.YES),
 
-                new TextField(nameof(ticket.url), ticket.url ?? InMemoryLuceneSearch.EMPTY_VALUE, Field.Store.NO),
-                new StringField(nameof(ticket.external_id), ticket.external_id?.ToString().ToLowerInvariant() ?? InMemoryLuceneSearch.EMPTY_VALUE, Field.Store.NO),
-                new StringField(nameof(ticket.type), ticket.type ?? InMemoryLuceneSearch.EMPTY_VALUE, Field.Store.NO),
-                new TextField(nameof(ticket.subject), ticket.subject ?? InMemoryLuceneSearch.EMPTY_VALUE, Field.Store.NO),
-                new TextField(nameof(ticket.description), ticket.description ?? InMemoryLuceneSearch.EMPTY_VALUE, Field.Store.NO),
-                new StringField(nameof(ticket.priority), ticket.priority ?? InMemoryLuceneSearch.EMPTY_VALUE, Field.Store.NO),
-                new StringField(nameof(ticket.status), ticket.status ?? InMemoryLuceneSearch.EMPTY_VALUE, Field.Store.NO),
-                new StringField(nameof(ticket.submitter_id), ticket.submitter_id.ToString(), Field.Store.NO),
-                new StringField(nameof(ticket.assignee_id), ticket.assignee_id.ToString(), Field.Store.NO),
-                new StringField(nameof(ticket.organization_id), ticket.organization_id.ToString(), Field.Store.NO),
-                new StringField(nameof(ticket.due_at), DateTools.DateToString(ticket.due_at.DateTime, DateTools.Resolution.MILLISECOND), Field.Store.NO),
+                new StringField(nameof(ticket.assignee_id), NormalizeForIndex(ticket.assignee_id), Field.Store.NO),
                 new StringField(nameof(ticket.created_at), DateTools.DateToString(ticket.created_at.DateTime, DateTools.Resolution.MILLISECOND), Field.Store.NO),
-                new StringField(nameof(ticket.via), ticket.via ?? InMemoryLuceneSearch.EMPTY_VALUE, Field.Store.NO),
-                new StringField(nameof(ticket.has_incidents), ticket.has_incidents.ToString().ToLowerInvariant(), Field.Store.NO),
+                new TextField(nameof(ticket.description), NormalizeForIndex(ticket.description), Field.Store.NO),
+                new StringField(nameof(ticket.due_at), DateTools.DateToString(ticket.due_at.DateTime, DateTools.Resolution.MILLISECOND), Field.Store.NO),
+                new StringField(nameof(ticket.external_id), NormalizeForIndex(ticket.external_id), Field.Store.NO),
+                new StringField(nameof(ticket.has_incidents), NormalizeForIndex(ticket.has_incidents), Field.Store.NO),
+                new StringField(nameof(ticket.priority), NormalizeForIndex(ticket.priority), Field.Store.NO),
+                new StringField(nameof(ticket.organization_id), NormalizeForIndex(ticket.organization_id), Field.Store.NO),
+                new StringField(nameof(ticket.status), NormalizeForIndex(ticket.status), Field.Store.NO),
+                new TextField(nameof(ticket.subject), NormalizeForIndex(ticket.subject), Field.Store.NO),
+                new StringField(nameof(ticket.submitter_id), NormalizeForIndex(ticket.submitter_id), Field.Store.NO),
+                new StringField(nameof(ticket.type), NormalizeForIndex(ticket.type), Field.Store.NO),
+                new TextField(nameof(ticket.url), NormalizeForIndex(ticket.url), Field.Store.NO),
+                new StringField(nameof(ticket.via), NormalizeForIndex(ticket.via), Field.Store.NO),
 
-                new TextField(InMemoryLuceneSearch.GLOBAL_SEARCH_FIELD, ticket.subject ?? "", Field.Store.NO),
-                new TextField(InMemoryLuceneSearch.GLOBAL_SEARCH_FIELD, ticket.description ?? "", Field.Store.NO),
-                new TextField(InMemoryLuceneSearch.GLOBAL_SEARCH_FIELD, ticket.external_id?.ToString().ToLowerInvariant() ?? "", Field.Store.NO)
+                new TextField(InMemoryLuceneSearch.GLOBAL_SEARCH_FIELD, NormalizeForIndex(ticket.description), Field.Store.NO),
+                new TextField(InMemoryLuceneSearch.GLOBAL_SEARCH_FIELD, NormalizeForIndex(ticket.subject), Field.Store.NO),
+                new TextField(InMemoryLuceneSearch.GLOBAL_SEARCH_FIELD, NormalizeForIndex(ticket.external_id), Field.Store.NO),
             };
 
-
-            if ((ticket.tags ?? new List<string>()).Any())
-            {
-                foreach (var tag in ticket.tags)
-                {
-                    searchDoc.Add(new TextField(nameof(ticket.tags), tag, Field.Store.NO));
-                    searchDoc.Add(new TextField(InMemoryLuceneSearch.GLOBAL_SEARCH_FIELD, tag, Field.Store.NO));
-                }
-            }
-            else
-            {
-                searchDoc.Add(new TextField(nameof(ticket.tags), InMemoryLuceneSearch.EMPTY_VALUE, Field.Store.NO));
-            }
+            AddTagFields(searchDoc, ticket.tags);
 
             return searchDoc;
         }

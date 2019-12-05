@@ -47,8 +47,6 @@ export const DataGridHeaderItemTen = styled.div`
 `;
 
 export const DataGridRow = styled.div`
-  border-bottom: 1px solid rgba(18, 60, 83, 0.05);
-  border-top: 1px solid rgba(18, 60, 83, 0.05);
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;

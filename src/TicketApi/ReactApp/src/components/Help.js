@@ -45,92 +45,76 @@ class Help extends Component {
         </ul>
         <h4>Advanced Syntax</h4>
         <p>
+          Terms should be quoted if they contain spaces or other special
+          characters.
+        </p>
+        <p>
           Searches can be performed using the following syntax features, and you
           may specify multiple search terms using boolean logic.
         </p>
-        <table>
-          <thead>
-            <tr>
-              <th>Feature</th>
-              <th>Example</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Wildcard</td>
-              <td>name:Mar*</td>
-            </tr>
-            <tr>
-              <td>Fuzzy Match</td>
-              <td>name:Mary~</td>
-            </tr>
-            <tr>
-              <td>Boolean And</td>
-              <td>name:Mar* AND suspended:false</td>
-            </tr>
-            <tr>
-              <td>Boolean Or</td>
-              <td>name:Mar* OR name:Bo*</td>
-            </tr>
-            <tr>
-              <td>Empty Fields</td>
-              <td>
-                details:""
-                <br />
-                details:ISNULL
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <SearchFieldRow>
+          <SearchFieldColumnHeader>Feature</SearchFieldColumnHeader>
+          <SearchFieldColumnHeader>Example</SearchFieldColumnHeader>
+        </SearchFieldRow>
+        <SearchFieldRow>
+          <SearchFieldColumn>Wildcard</SearchFieldColumn>
+          <SearchFieldColumn>name:Mar*</SearchFieldColumn>
+        </SearchFieldRow>
+        <SearchFieldRow>
+          <SearchFieldColumn>Fuzzy Match</SearchFieldColumn>
+          <SearchFieldColumn>name:Mary~</SearchFieldColumn>
+        </SearchFieldRow>
+        <SearchFieldRow>
+          <SearchFieldColumn>Boolean And</SearchFieldColumn>
+          <SearchFieldColumn>name:Mar* AND suspended:false</SearchFieldColumn>
+        </SearchFieldRow>
+        <SearchFieldRow>
+          <SearchFieldColumn>Boolean Or</SearchFieldColumn>
+          <SearchFieldColumn>name:Mar* OR name:Bo*</SearchFieldColumn>
+        </SearchFieldRow>
+        <SearchFieldRow>
+          <SearchFieldColumn>Empty Fields</SearchFieldColumn>
+          <SearchFieldColumn>
+            details:""
+            <br />
+            details:ISNULL
+          </SearchFieldColumn>
+        </SearchFieldRow>
         <p></p>
         <h4>Search Field Reference</h4>
-        <p>The following fields can be used when searching for documents:</p>
+        <p>
+          The following fields can be used when searching for documents. Click
+          on the fields in the search page sidebar to use them.
+        </p>
         <SearchFieldRow>
           {this.props.schema && this.props.schema.organization ? (
             <SearchFieldColumn>
               <h5>Organization</h5>
-              <table>
-                <tbody>
-                  {_.map(this.props.schema.organization.sort(), field => (
-                    <tr key={field}>
-                      <td>{field}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              {_.map(this.props.schema.organization.sort(), field => (
+                <div>{field}</div>
+              ))}
             </SearchFieldColumn>
           ) : null}
 
           {this.props.schema && this.props.schema.ticket ? (
             <SearchFieldColumn>
               <h5>Ticket</h5>
-              <table>
-                <tbody>
-                  {_.map(this.props.schema.ticket.sort(), field => (
-                    <tr key={field}>
-                      <td>{field}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              {_.map(this.props.schema.ticket.sort(), field => (
+                <div>{field}</div>
+              ))}
             </SearchFieldColumn>
           ) : null}
 
           {this.props.schema && this.props.schema.user ? (
             <SearchFieldColumn>
               <h5>User</h5>
-              <table>
-                <tbody>
-                  {_.map(this.props.schema.user.sort(), field => (
-                    <tr key={field}>
-                      <td>{field}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              {_.map(this.props.schema.user.sort(), field => (
+                <div>{field}</div>
+              ))}
             </SearchFieldColumn>
           ) : null}
         </SearchFieldRow>
+        <p></p>
       </div>
     );
   }
@@ -142,6 +126,9 @@ export default connect(
 )(Help);
 
 const SearchFieldRow = styled.div`
+  border-bottom: 1px solid rgba(18, 60, 83, 0.05);
+  border-top: 1px solid rgba(18, 60, 83, 0.05);
+  padding: 12px 32px;
   &:after {
     content: "";
     display: table;
@@ -152,4 +139,9 @@ const SearchFieldRow = styled.div`
 const SearchFieldColumn = styled.div`
   float: left;
   width: 33.33%;
+`;
+const SearchFieldColumnHeader = styled.div`
+  float: left;
+  width: 33.33%;
+  font-weight: bold;
 `;

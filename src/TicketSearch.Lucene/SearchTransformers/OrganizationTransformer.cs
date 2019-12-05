@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Lucene.Net.Documents;
 using TicketCore.Model;
 
 namespace TicketSearch.Lucene.SearchTransformers
 {
-    internal class OrganizationTransformer : ISearchTransformer<Organization>
+    internal class OrganizationTransformer : TransformerBase,  ISearchTransformer<Organization>
     {
         private static readonly List<string> searchFields;
 
@@ -26,44 +25,33 @@ namespace TicketSearch.Lucene.SearchTransformers
                 };
         }
 
-        public List<string> SearchFields => searchFields;
+        public override List<string> SearchFields => searchFields;
 
         public Document Transform(Organization org)
         {
             var searchDoc = new Document
             {
-                new StringField(nameof(org._id), org._id.ToString(), Field.Store.YES),
-                new StringField(InMemoryLuceneSearch.DOC_TYPE_FIELD, typeof(Organization).Name.ToLowerInvariant(), Field.Store.YES),
+                new StringField(nameof(org._id), NormalizeForIndex(org._id), Field.Store.YES),
+                new StringField(InMemoryLuceneSearch.DOC_TYPE_FIELD, NormalizeForIndex(typeof(Organization).Name), Field.Store.YES),
 
-                new TextField(nameof(org.url), org.url ?? InMemoryLuceneSearch.EMPTY_VALUE, Field.Store.NO),
-                new StringField(nameof(org.external_id), org.external_id?.ToString().ToLowerInvariant() ?? InMemoryLuceneSearch.EMPTY_VALUE, Field.Store.NO),
-                new TextField(nameof(org.name), org.name ?? InMemoryLuceneSearch.EMPTY_VALUE, Field.Store.NO),
-                new TextField(nameof(org.details), org.details ?? InMemoryLuceneSearch.EMPTY_VALUE, Field.Store.NO),
-                new StringField(nameof(org.shared_tickets), org.shared_tickets.ToString().ToLowerInvariant(), Field.Store.NO),
                 new StringField(nameof(org.created_at), DateTools.DateToString(org.created_at.DateTime, DateTools.Resolution.MILLISECOND), Field.Store.NO),
+                new TextField(nameof(org.details), NormalizeForIndex(org.details), Field.Store.NO),
+                new StringField(nameof(org.external_id), NormalizeForIndex(org.external_id), Field.Store.NO),
+                new TextField(nameof(org.name), NormalizeForIndex(org.name), Field.Store.NO),
+                new StringField(nameof(org.shared_tickets), NormalizeForIndex(org.shared_tickets), Field.Store.NO),
+                new TextField(nameof(org.url), NormalizeForIndex(org.url), Field.Store.NO),
 
-                new TextField(InMemoryLuceneSearch.GLOBAL_SEARCH_FIELD, org.details ?? "", Field.Store.NO),
-                new TextField(InMemoryLuceneSearch.GLOBAL_SEARCH_FIELD, org.name ?? "", Field.Store.NO),
-                new TextField(InMemoryLuceneSearch.GLOBAL_SEARCH_FIELD, org.external_id?.ToString().ToLowerInvariant() ?? "", Field.Store.NO)
+                new TextField(InMemoryLuceneSearch.GLOBAL_SEARCH_FIELD, NormalizeForIndex(org.details), Field.Store.NO),
+                new TextField(InMemoryLuceneSearch.GLOBAL_SEARCH_FIELD, NormalizeForIndex(org.name), Field.Store.NO),
+                new TextField(InMemoryLuceneSearch.GLOBAL_SEARCH_FIELD, NormalizeForIndex(org.external_id), Field.Store.NO)
             };
 
-            if ((org.tags ?? new List<string>()).Any())
-            {
-                foreach (var tag in org.tags)
-                {
-                    searchDoc.Add(new TextField(nameof(org.tags), tag, Field.Store.NO));
-                    searchDoc.Add(new TextField(InMemoryLuceneSearch.GLOBAL_SEARCH_FIELD, tag, Field.Store.NO));
-                }
-            }
-            else
-            {
-                searchDoc.Add(new TextField(nameof(org.tags), InMemoryLuceneSearch.EMPTY_VALUE, Field.Store.NO));
-            }
+            AddTagFields(searchDoc, org.tags);
 
             foreach (var domain in org.domain_names ?? new List<string>())
             {
-                searchDoc.Add(new StringField(nameof(org.domain_names), domain, Field.Store.NO));
-                searchDoc.Add(new TextField(InMemoryLuceneSearch.GLOBAL_SEARCH_FIELD, domain, Field.Store.NO));
+                searchDoc.Add(new StringField(nameof(org.domain_names), NormalizeForIndex(domain), Field.Store.NO));
+                searchDoc.Add(new TextField(InMemoryLuceneSearch.GLOBAL_SEARCH_FIELD, NormalizeForIndex(domain), Field.Store.NO));
             }
 
 
