@@ -11,8 +11,8 @@ const initialState = {
 };
 
 export const actionCreators = {
-  saveSearchTerm: searchTerm => async dispatch => {
-    dispatch({ type: receiveSearchTermType, searchTerm });
+  saveSearchTerm: (searchTerm, searchScope) => async dispatch => {
+    dispatch({ type: receiveSearchTermType, searchTerm, searchScope });
   },
   requestSearchResults: searchInput => async dispatch => {
     dispatch({ type: requestSearchType });
@@ -81,7 +81,8 @@ export const searchReducer = (state, action) => {
   if (action.type === receiveSearchTermType) {
     return {
       ...state,
-      searchTerm: action.searchTerm
+      searchTerm: action.searchTerm,
+      searchScope: action.searchScope
     };
   }
 

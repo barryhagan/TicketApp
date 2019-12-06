@@ -30,6 +30,7 @@ class Search extends Component {
   componentDidMount() {
     this.props.requestSearchSchema();
     this.setState({ search: (this.props.search || {}).searchTerm || "" });
+    this.setState({ scope: (this.props.search || {}).searchScope || "" });
   }
 
   handleInputChange(event) {
@@ -40,7 +41,7 @@ class Search extends Component {
   handleSubmit(event) {
     const { search, scope } = this.state;
     const { saveSearchTerm, requestSearchResults } = this.props;
-    saveSearchTerm(search);
+    saveSearchTerm(search, scope);
     requestSearchResults({
       search: search,
       scope: scope
