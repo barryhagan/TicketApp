@@ -11,7 +11,7 @@ namespace TicketApi.GraphQL.Schemas
 
             this.AuthorizeWith(TicketGraphSchema.GraphQLAuthPolicyName);
 
-            //TODO : Add actual mutation code when required
+            //stub the mutation graph for now
             Field<BooleanGraphType>()
                 .Name("ticketUpdate")
                 .Resolve(ctx => { return true; });

@@ -9,6 +9,6 @@ namespace TicketCore.Model
         public Guid? external_id { get; set; }
         public DateTimeOffset created_at { get; set; }
         public string url { get; set; }
-        public List<string> tags { get; set; }
+        public List<string> tags { get; set; } = new List<string>();
     }
 }

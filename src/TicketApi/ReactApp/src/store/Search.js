@@ -3,6 +3,7 @@ import _ from "lodash";
 
 const requestSearchType = "REQUEST_SEARCH";
 const receiveSearchType = "RECEIVE_SEARCH";
+const receiveSearchTermType = "RECEIVE_SEARCH_TERM";
 const initialState = {
   searchResults: {},
   errors: null,
@@ -10,6 +11,9 @@ const initialState = {
 };
 
 export const actionCreators = {
+  saveSearchTerm: searchTerm => async dispatch => {
+    dispatch({ type: receiveSearchTermType, searchTerm });
+  },
   requestSearchResults: searchInput => async dispatch => {
     dispatch({ type: requestSearchType });
 
@@ -71,6 +75,13 @@ export const searchReducer = (state, action) => {
       searchResults: action.searchResults,
       errors: action.errors,
       isLoading: false
+    };
+  }
+
+  if (action.type === receiveSearchTermType) {
+    return {
+      ...state,
+      searchTerm: action.searchTerm
     };
   }
 

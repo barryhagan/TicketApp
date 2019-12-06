@@ -45,12 +45,16 @@ class Help extends Component {
         </ul>
         <h4>Advanced Syntax</h4>
         <p>
+          Searches can be performed using the following syntax features, and you
+          may specify multiple search terms using boolean logic.
+        </p>
+        <p>
           Terms should be quoted if they contain spaces or other special
           characters.
         </p>
         <p>
-          Searches can be performed using the following syntax features, and you
-          may specify multiple search terms using boolean logic.
+          Dates should be searched using the <strong>yyyyMMddHHmmss</strong>
+          format
         </p>
         <SearchFieldRow>
           <SearchFieldColumnHeader>Feature</SearchFieldColumnHeader>
@@ -71,6 +75,12 @@ class Help extends Component {
         <SearchFieldRow>
           <SearchFieldColumn>Boolean Or</SearchFieldColumn>
           <SearchFieldColumn>name:Mar* OR name:Bo*</SearchFieldColumn>
+        </SearchFieldRow>
+        <SearchFieldRow>
+          <SearchFieldColumn>Date Range Search</SearchFieldColumn>
+          <SearchFieldColumn>
+            last_login_at:[201410 TO 201412]
+          </SearchFieldColumn>
         </SearchFieldRow>
         <SearchFieldRow>
           <SearchFieldColumn>Empty Fields</SearchFieldColumn>

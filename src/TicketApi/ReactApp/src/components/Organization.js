@@ -1,8 +1,9 @@
 import React, { Component } from "react";
+import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
+import { actionCreators } from "../store/Organization";
 import { Link } from "react-router-dom";
 import _ from "lodash";
-import ApiService from "../ApiService";
 import {
   DataGridHeader,
   DataGridHeaderItem,
@@ -13,18 +14,15 @@ import {
 } from "./Grid";
 
 class Organization extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { organization: null };
-  }
-
   async componentDidMount() {
-    const org = await ApiService.getOrganization(this.props.match.params.id);
-    this.setState({ organization: org });
+    try {
+      const id = this.props.match.params.id;
+      this.props.requestOrganization(id);
+    } catch (err) {}
   }
 
   render() {
-    const org = this.state.organization;
+    const org = this.props.organization;
     return (
       <div>
         <h4>Organization Details</h4>
@@ -71,7 +69,6 @@ class Organization extends Component {
             <DataGridRow>
               <DataGridItem>tags</DataGridItem>
               <DataGridItemTen>
-                {" "}
                 {_.map(org.tags, (tag, idx) => (
                   <div key={`tag_${idx}`}>{tag}</div>
                 ))}
@@ -86,7 +83,6 @@ class Organization extends Component {
             <DataGridRow>
               <DataGridItem>users</DataGridItem>
               <DataGridItemTen>
-                {" "}
                 {_.map(org.users, (user, idx) => (
                   <div key={`user_${idx}`}>
                     <Link to={`/user/${user.id}`}>
@@ -99,7 +95,6 @@ class Organization extends Component {
             <DataGridRow>
               <DataGridItem>tickets</DataGridItem>
               <DataGridItemTen>
-                {" "}
                 {_.map(org.tickets, (ticket, idx) => (
                   <div key={`ticket_${idx}`}>
                     <Link to={`/ticket/${ticket.id}`}>{ticket.subject}</Link> (
@@ -115,4 +110,7 @@ class Organization extends Component {
   }
 }
 
-export default connect()(Organization);
+export default connect(
+  state => state.organization,
+  dispatch => bindActionCreators(actionCreators, dispatch)
+)(Organization);

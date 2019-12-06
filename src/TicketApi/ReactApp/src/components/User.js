@@ -1,8 +1,9 @@
 import React, { Component } from "react";
+import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
+import { actionCreators } from "../store/User";
 import { Link } from "react-router-dom";
 import _ from "lodash";
-import ApiService from "../ApiService";
 import {
   DataGridHeader,
   DataGridHeaderItem,
@@ -13,18 +14,15 @@ import {
 } from "./Grid";
 
 class User extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { user: null };
-  }
-
   async componentDidMount() {
-    var user = await ApiService.getUser(this.props.match.params.id);
-    this.setState({ user: user });
+    try {
+      const id = this.props.match.params.id;
+      this.props.requestUser(id);
+    } catch (err) {}
   }
 
   render() {
-    const user = this.state.user;
+    const { user } = this.props;
     return (
       <div>
         <h4>User Details</h4>
@@ -132,7 +130,6 @@ class User extends Component {
             <DataGridRow>
               <DataGridItem>assigned tickets</DataGridItem>
               <DataGridItemTen>
-                {" "}
                 {_.map(user.assignedTickets, (ticket, idx) => (
                   <div key={`ticket_${idx}`}>
                     <Link to={`/ticket/${ticket.id}`}>{ticket.subject} </Link> (
@@ -144,7 +141,6 @@ class User extends Component {
             <DataGridRow>
               <DataGridItem>submitted tickets</DataGridItem>
               <DataGridItemTen>
-                {" "}
                 {_.map(user.submittedTickets, (ticket, idx) => (
                   <div key={`ticket_${idx}`}>
                     <Link to={`/ticket/${ticket.id}`}>{ticket.subject}</Link> (
@@ -160,4 +156,7 @@ class User extends Component {
   }
 }
 
-export default connect()(User);
+export default connect(
+  state => state.user,
+  dispatch => bindActionCreators(actionCreators, dispatch)
+)(User);

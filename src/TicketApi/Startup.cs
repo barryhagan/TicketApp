@@ -1,6 +1,5 @@
 ﻿using GraphQL.Server;
 using GraphQL.Server.Ui.Playground;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -37,11 +36,6 @@ namespace TicketApi
                 configuration.RootPath = "ReactApp/build";
             });
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-            {
-                //TODO: add JWT auth
-            });
-
             services.AddResponseCompression(options =>
             {
                 options.Providers.Add<GzipCompressionProvider>();
@@ -56,9 +50,7 @@ namespace TicketApi
             {
                 options.AddPolicy(TicketGraphSchema.GraphQLAuthPolicyName, p =>
                 {
-                    p.RequireAssertion(x => true);
-                    // TODO : enable authorization after JWT auth is turned on
-                    //p.RequireAuthenticatedUser();
+                    p.RequireAssertion(x => true);  //p.RequireAuthenticatedUser(); change this when JWT auth is setup 
                 });
             })
             .AddDataLoader()
@@ -81,7 +73,6 @@ namespace TicketApi
 
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
-            app.UseAuthentication();
             app.UseResponseCompression();
 
             app.UseGraphQL<TicketGraphSchema, TicketGraphQLHttpMiddleware<TicketGraphSchema>>();

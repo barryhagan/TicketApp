@@ -46,10 +46,10 @@ namespace TicketSearch.Lucene.SearchTransformers
 
                 new StringField(nameof(user.active), NormalizeForIndex(user.active), Field.Store.NO),
                 new TextField(nameof(user.alias), NormalizeForIndex(user.alias), Field.Store.NO),
-                new StringField(nameof(user.created_at), DateTools.DateToString(user.created_at.DateTime, DateTools.Resolution.MILLISECOND), Field.Store.NO),
+                new StringField(nameof(user.created_at), DateTools.DateToString(user.created_at.DateTime, DateTools.Resolution.SECOND), Field.Store.NO),
                 new StringField(nameof(user.email), NormalizeForIndex(user.email), Field.Store.NO),
                 new StringField(nameof(user.external_id), NormalizeForIndex(user.external_id), Field.Store.NO),
-                new StringField(nameof(user.last_login_at), DateTools.DateToString(user.last_login_at.DateTime, DateTools.Resolution.MILLISECOND), Field.Store.NO),
+                new StringField(nameof(user.last_login_at), DateTools.DateToString(user.last_login_at.DateTime, DateTools.Resolution.SECOND), Field.Store.NO),
                 new StringField(nameof(user.locale), NormalizeForIndex(user.locale), Field.Store.NO),
                 new TextField(nameof(user.name), NormalizeForIndex(user.name), Field.Store.NO),
                 new StringField(nameof(user.organization_id), NormalizeForIndex(user.organization_id) , Field.Store.NO),

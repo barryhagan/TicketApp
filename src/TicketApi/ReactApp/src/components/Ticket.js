@@ -1,8 +1,9 @@
 import React, { Component } from "react";
+import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
+import { actionCreators } from "../store/Ticket";
 import { Link } from "react-router-dom";
 import _ from "lodash";
-import ApiService from "../ApiService";
 import {
   DataGridHeader,
   DataGridHeaderItem,
@@ -13,18 +14,15 @@ import {
 } from "./Grid";
 
 class Ticket extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { ticket: null };
-  }
-
   async componentDidMount() {
-    const ticket = await ApiService.getTicket(this.props.match.params.id);
-    this.setState({ ticket: ticket });
+    try {
+      const id = this.props.match.params.id;
+      this.props.requestTicket(id);
+    } catch (err) {}
   }
 
   render() {
-    const ticket = this.state.ticket;
+    const { ticket } = this.props;
     return (
       <div>
         <h4>Ticket Details</h4>
@@ -38,16 +36,17 @@ class Ticket extends Component {
               <DataGridItem>_id</DataGridItem>
               <DataGridItemTen>{ticket.id}</DataGridItemTen>
             </DataGridRow>
-            <DataGridRow>
-              <DataGridItem>
-                <Link to={`/user/${ticket.assignee.id}`}>assignee</Link>
-              </DataGridItem>
-              <DataGridItemTen>
-                {" "}
-                {ticket.assignee.name}{" "}
-                {ticket.assignee.email ? `(${ticket.assignee.email})` : null}
-              </DataGridItemTen>
-            </DataGridRow>
+            {ticket.assignee ? (
+              <DataGridRow>
+                <DataGridItem>
+                  <Link to={`/user/${ticket.assignee.id}`}>assignee</Link>
+                </DataGridItem>
+                <DataGridItemTen>
+                  {ticket.assignee.name}{" "}
+                  {ticket.assignee.email ? `(${ticket.assignee.email})` : null}
+                </DataGridItemTen>
+              </DataGridRow>
+            ) : null}
             <DataGridRow>
               <DataGridItem>created_at</DataGridItem>
               <DataGridItemTen>{ticket.created_at}</DataGridItemTen>
@@ -90,7 +89,6 @@ class Ticket extends Component {
             </DataGridRow>
             <DataGridRow>
               <DataGridItem>
-                {" "}
                 <Link to={`/user/${ticket.submitter.id}`}>submitter</Link>
               </DataGridItem>
               <DataGridItemTen>
@@ -101,7 +99,6 @@ class Ticket extends Component {
             <DataGridRow>
               <DataGridItem>tags</DataGridItem>
               <DataGridItemTen>
-                {" "}
                 {_.map(ticket.tags, (tag, idx) => (
                   <div key={`tag_${idx}`}>{tag}</div>
                 ))}
@@ -128,4 +125,7 @@ class Ticket extends Component {
   }
 }
 
-export default connect()(Ticket);
+export default connect(
+  state => state.ticket,
+  dispatch => bindActionCreators(actionCreators, dispatch)
+)(Ticket);

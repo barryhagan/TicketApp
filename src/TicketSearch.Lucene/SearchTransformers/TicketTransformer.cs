@@ -42,9 +42,9 @@ namespace TicketSearch.Lucene.SearchTransformers
                 new StringField(InMemoryLuceneSearch.DOC_TYPE_FIELD, NormalizeForIndex(typeof(Ticket).Name), Field.Store.YES),
 
                 new StringField(nameof(ticket.assignee_id), NormalizeForIndex(ticket.assignee_id), Field.Store.NO),
-                new StringField(nameof(ticket.created_at), DateTools.DateToString(ticket.created_at.DateTime, DateTools.Resolution.MILLISECOND), Field.Store.NO),
+                new StringField(nameof(ticket.created_at), DateTools.DateToString(ticket.created_at.DateTime, DateTools.Resolution.SECOND), Field.Store.NO),
                 new TextField(nameof(ticket.description), NormalizeForIndex(ticket.description), Field.Store.NO),
-                new StringField(nameof(ticket.due_at), DateTools.DateToString(ticket.due_at.DateTime, DateTools.Resolution.MILLISECOND), Field.Store.NO),
+                new StringField(nameof(ticket.due_at), DateTools.DateToString(ticket.due_at.DateTime, DateTools.Resolution.SECOND), Field.Store.NO),
                 new StringField(nameof(ticket.external_id), NormalizeForIndex(ticket.external_id), Field.Store.NO),
                 new StringField(nameof(ticket.has_incidents), NormalizeForIndex(ticket.has_incidents), Field.Store.NO),
                 new StringField(nameof(ticket.priority), NormalizeForIndex(ticket.priority), Field.Store.NO),

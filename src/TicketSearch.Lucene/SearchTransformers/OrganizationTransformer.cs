@@ -34,7 +34,7 @@ namespace TicketSearch.Lucene.SearchTransformers
                 new StringField(nameof(org._id), NormalizeForIndex(org._id), Field.Store.YES),
                 new StringField(InMemoryLuceneSearch.DOC_TYPE_FIELD, NormalizeForIndex(typeof(Organization).Name), Field.Store.YES),
 
-                new StringField(nameof(org.created_at), DateTools.DateToString(org.created_at.DateTime, DateTools.Resolution.MILLISECOND), Field.Store.NO),
+                new StringField(nameof(org.created_at), DateTools.DateToString(org.created_at.DateTime, DateTools.Resolution.SECOND), Field.Store.NO),
                 new TextField(nameof(org.details), NormalizeForIndex(org.details), Field.Store.NO),
                 new StringField(nameof(org.external_id), NormalizeForIndex(org.external_id), Field.Store.NO),
                 new TextField(nameof(org.name), NormalizeForIndex(org.name), Field.Store.NO),

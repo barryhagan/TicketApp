@@ -29,6 +29,7 @@ class Search extends Component {
 
   componentDidMount() {
     this.props.requestSearchSchema();
+    this.setState({ search: (this.props.search || {}).searchTerm || "" });
   }
 
   handleInputChange(event) {
@@ -37,11 +38,15 @@ class Search extends Component {
   }
 
   handleSubmit(event) {
-    this.props.requestSearchResults({
-      search: this.state.search,
-      scope: this.state.scope
+    const { search, scope } = this.state;
+    const { saveSearchTerm, requestSearchResults } = this.props;
+    saveSearchTerm(search);
+    requestSearchResults({
+      search: search,
+      scope: scope
     });
-    this.setState({ lastSearch: this.state.search });
+    this.setState({ lastSearch: search });
+
     event.preventDefault();
   }
 
@@ -60,8 +65,8 @@ class Search extends Component {
 
   render() {
     const { scope, search, lastSearch } = this.state;
-    const { searchResults, errors, isLoading } = this.props.search;
-    const { schema } = this.props.searchSchema;
+    const { searchResults, errors, isLoading } = this.props.search || {};
+    const { schema } = this.props.searchSchema || {};
 
     const hasResults = searchResults && searchResults.length > 0;
 
@@ -180,7 +185,7 @@ const GetDetails = result => {
 };
 
 const SearchTerms = ({ scope, schema, handleTermClick }) => {
-  if (!schema.user) {
+  if (!schema || !schema.user) {
     return null;
   }
   var terms;
