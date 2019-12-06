@@ -53,7 +53,7 @@ class Help extends Component {
           characters.
         </p>
         <p>
-          Dates should be searched using the <strong>yyyyMMddHHmmss</strong>
+          Dates should be searched using the <strong>yyyyMMddHHmmss</strong>{" "}
           format
         </p>
         <SearchFieldRow>
