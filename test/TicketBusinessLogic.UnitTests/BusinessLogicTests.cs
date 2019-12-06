@@ -3,8 +3,8 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using TicketCore.Dto;
 using TicketCore.Interfaces;
 using TicketCore.Model;
 using Xunit;
@@ -74,6 +74,24 @@ namespace TicketBusinessLogic.UnitTests
                 .Callback<IEnumerable<User>>(e => mockStorage.AddRange(e));
             mockStore.Setup(store => store.LoadManyAsync<User, int>(It.IsAny<IEnumerable<int>>()))
                 .ReturnsAsync((IEnumerable<int> ids) => { return mockStorage.Where(u => ids.Contains(u._id)).ToList(); });
+
+
+            mockSearch.Setup(search => search.SearchAsync(It.IsAny<SearchInput>())).ReturnsAsync(new List<SearchHit>
+            {
+                new SearchHit
+                {
+                    DocId = "10",
+                    DocType = "user",
+                    Score = .77f
+                },
+                new SearchHit
+                {
+                    DocId = Guid.NewGuid().ToString(),
+                    DocType= "ticket",
+                    Score = .65f
+
+                }
+            });
         }
 
         [Fact]
@@ -84,7 +102,16 @@ namespace TicketBusinessLogic.UnitTests
             Assert.Equal(2, users.Count());
         }
 
+        [Fact]
+        public async Task can_retrieve_search_results()
+        {
+            var results = await logic.SearchAsync(new SearchInput { Search = "_id:10 OR _id:101" });
 
-
+            Assert.Empty(results.Organizations);
+            Assert.Single(results.Users);
+            Assert.Equal(10, results.Users.Single().Key);
+            Assert.Single(results.Tickets);
+            Assert.NotEqual(Guid.Empty, results.Tickets.Single().Key);
+        }
     }
 }

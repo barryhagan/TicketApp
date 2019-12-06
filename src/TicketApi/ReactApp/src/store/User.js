@@ -1,5 +1,4 @@
 import ApiService from "../ApiService";
-import _ from "lodash";
 
 const requestUserType = "REQUEST_USER";
 const receiveUserType = "RECEIVE_USER";

@@ -1,5 +1,4 @@
 import ApiService from "../ApiService";
-import _ from "lodash";
 
 const requestTicketType = "REQUEST_TICKET";
 const receiveTicketType = "RECEIVE_TICKET";

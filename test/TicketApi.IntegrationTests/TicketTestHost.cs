@@ -20,7 +20,7 @@ namespace TicketApi.IntegrationTests
         private static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseEnvironment("IntegrationTest")
-                .UseStartup<TicketApi.Startup>();
+                .UseStartup<Startup>();
 
         public T GetService<T>()
         {
@@ -31,7 +31,16 @@ namespace TicketApi.IntegrationTests
 
         public void Dispose()
         {
-            Server?.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Server?.Dispose();
+            }
         }
 
         public Task InitializeAsync()

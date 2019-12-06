@@ -1,5 +1,4 @@
 import ApiService from "../ApiService";
-import _ from "lodash";
 
 const requestOrgType = "REQUEST_ORG";
 const receiveOrgType = "RECEIVE_ORG";

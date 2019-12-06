@@ -22,7 +22,16 @@ namespace TicketApi.IntegrationTests
 
         public void Dispose()
         {
-            testClient?.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                testClient?.Dispose();
+            }
         }
 
         protected async Task<T> GraphRequestAsync<T>(string gqlQuery)
