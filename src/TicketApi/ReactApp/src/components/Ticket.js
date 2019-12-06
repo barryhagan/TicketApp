@@ -69,11 +69,17 @@ class Ticket extends Component {
             </DataGridRow>
             <DataGridRow>
               <DataGridItem>
-                <Link to={`/organization/${ticket.organization.id}`}>
-                  organization
-                </Link>
+                {ticket.organization ? (
+                  <Link to={`/organization/${ticket.organization.id}`}>
+                    organization
+                  </Link>
+                ) : (
+                  "organization"
+                )}
               </DataGridItem>
-              <DataGridItemTen>{ticket.organization.name}</DataGridItemTen>
+              <DataGridItemTen>
+                {ticket.organization ? ticket.organization.name : "--"}
+              </DataGridItemTen>
             </DataGridRow>
             <DataGridRow>
               <DataGridItem>priority</DataGridItem>
@@ -87,15 +93,19 @@ class Ticket extends Component {
               <DataGridItem>subject</DataGridItem>
               <DataGridItemTen>{ticket.subject}</DataGridItemTen>
             </DataGridRow>
-            <DataGridRow>
-              <DataGridItem>
-                <Link to={`/user/${ticket.submitter.id}`}>submitter</Link>
-              </DataGridItem>
-              <DataGridItemTen>
-                {ticket.submitter.name}{" "}
-                {ticket.submitter.email ? `(${ticket.submitter.email})` : null}
-              </DataGridItemTen>
-            </DataGridRow>
+            {ticket.submitter ? (
+              <DataGridRow>
+                <DataGridItem>
+                  <Link to={`/user/${ticket.submitter.id}`}>submitter</Link>
+                </DataGridItem>
+                <DataGridItemTen>
+                  {ticket.submitter.name}{" "}
+                  {ticket.submitter.email
+                    ? `(${ticket.submitter.email})`
+                    : null}
+                </DataGridItemTen>
+              </DataGridRow>
+            ) : null}
             <DataGridRow>
               <DataGridItem>tags</DataGridItem>
               <DataGridItemTen>

@@ -32,7 +32,7 @@ namespace TicketApi.GraphQL.Types
             Field(x => x.created_at, type: typeof(DateTimeGraphType));
             Field(x => x.external_id, type: typeof(GuidGraphType));
             Field(x => x.tags, type: typeof(ListGraphType<StringGraphType>));
-            Field(x => x.url);
+            Field(x => x.url, nullable: true);
         }
 
         protected async Task<TEntity> DataLoadById<TEntity, TEntityKey>(TEntityKey id) where TEntity : ModelBase<TEntityKey>

@@ -52,16 +52,18 @@ class User extends Component {
             <DataGridRow>
               <DataGridItem>email</DataGridItem>
               <DataGridItemTen>
-                <span>
-                  {user.email}{" "}
-                  <a
-                    href={`mailto:${user.email}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <img src={emailIcon} alt="Send Email" />
-                  </a>
-                </span>
+                {user.email ? (
+                  <span>
+                    {user.email}{" "}
+                    <a
+                      href={`mailto:${user.email}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <img src={emailIcon} alt="Send Email" />
+                    </a>
+                  </span>
+                ) : null}
               </DataGridItemTen>
             </DataGridRow>
             <DataGridRow>
