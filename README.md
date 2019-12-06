@@ -1,3 +1,4 @@
+![TicketApp](https://raw.githubusercontent.com/barryhagan/TicketApp/master/src/TicketApi/ReactApp/src/components/zd.png) 
 # TicketApp
 
 Demonstration of a basic help desk search application.
@@ -9,14 +10,14 @@ This application includes:
   - An embedded JSON data source to load demonstration data
 - A React.js + Redux sample front end web application
 
-# Run with Docker
+# Option 1: Run in a Docker container
 - Prerequisites
   - a recent version of [Docker](https://www.docker.com/products/docker-desktop) and [Docker Compose](https://docs.docker.com/compose/install/)
 - Clone this repository
 - From the root of the repository run `docker-compose up`
-- Browse to http://localhost:10443 after Docker Compose has built and started the container.  If port 10443 is already in use on your local machine, edit the docker-compose.yml file and change the exposed container port.
+- Browse to http://localhost:10443 after Docker Compose has built and started the container.  If port 10443 is already in use on your local machine, edit the [docker-compose.yml](docker-compose.yml) file and change the exposed container port.
 
-# Developer setup
+# Option 2: Full developer setup
 - Prerequisites
   - a recent version of [npm](https://www.npmjs.com/get-npm)
   - [.Net Core 2.2 SDK](https://dotnet.microsoft.com/download/dotnet-core/2.2)
@@ -25,12 +26,12 @@ This application includes:
   - Visual Studio 2019 or 2017
     - Open TicketApp.sln and hit F5 or Ctrl+F5
   - Visual Studio Code and other IDEs
-    - Open a terminal in /src/TicketApi/ReactApp and run `npm i`
-    - Open a terminal in the repository root and run `dotnet start`
-- Browse to http://localhost:34401 after the application has started.  If port 34401 is already in use on your local machine, edit the appsettings.Development.json file and change the configured Kestrel HTTP port.
+    - Open a terminal in the [ReactApp](src/TicketApi/ReactApp) directory and run `npm i`
+    - Open a terminal in the repository root and run `dotnet run`
+- Browse to http://localhost:34401 after the application has started.  If port 34401 is already in use on your local machine, edit the [appsettings.Development.json](src/TicketApi/appsettings.Development.json) file and change the configured Kestrel HTTP port.
     
 # Continuous integration and testing
-- A GitHub action is configured to run unit and integration tests on any push to the master branch. [View the action results](https://github.com/barryhagan/TicketApp/actions)
+- A GitHub [Action](.github/workflows/ticketapp-ci.yml) is configured to run unit and integration tests on any push to the master branch
 - You can run tests locally by running `dotnet test` from the repository root
 
 
