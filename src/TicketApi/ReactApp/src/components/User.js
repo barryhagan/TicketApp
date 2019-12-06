@@ -12,6 +12,7 @@ import {
   DataGridItem,
   DataGridItemTen
 } from "./Grid";
+import emailIcon from "./email.png";
 
 class User extends Component {
   async componentDidMount() {
@@ -51,7 +52,16 @@ class User extends Component {
             <DataGridRow>
               <DataGridItem>email</DataGridItem>
               <DataGridItemTen>
-                <a href={`mailto:${user.email}`}>{user.email}</a>
+                <span>
+                  {user.email}{" "}
+                  <a
+                    href={`mailto:${user.email}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img src={emailIcon} alt="Send Email" />
+                  </a>
+                </span>
               </DataGridItemTen>
             </DataGridRow>
             <DataGridRow>
@@ -120,7 +130,9 @@ class User extends Component {
             <DataGridRow>
               <DataGridItem>url</DataGridItem>
               <DataGridItemTen>
-                <a href={user.url}>{user.url}</a>
+                <a href={user.url} target="_blank" rel="noopener noreferrer">
+                  {user.url}
+                </a>
               </DataGridItemTen>
             </DataGridRow>
             <DataGridRow>

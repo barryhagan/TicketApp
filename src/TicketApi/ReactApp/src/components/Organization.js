@@ -77,7 +77,9 @@ class Organization extends Component {
             <DataGridRow>
               <DataGridItem>url</DataGridItem>
               <DataGridItemTen>
-                <a href={org.url}>{org.url}</a>
+                <a href={org.url} target="_blank" rel="noopener noreferrer">
+                  {org.url}
+                </a>
               </DataGridItemTen>
             </DataGridRow>
             <DataGridRow>

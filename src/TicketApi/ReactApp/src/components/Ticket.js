@@ -111,7 +111,9 @@ class Ticket extends Component {
             <DataGridRow>
               <DataGridItem>url</DataGridItem>
               <DataGridItemTen>
-                <a href={ticket.url}>{ticket.url}</a>
+                <a href={ticket.url} target="_blank" rel="noopener noreferrer">
+                  {ticket.url}
+                </a>
               </DataGridItemTen>
             </DataGridRow>
             <DataGridRow>
