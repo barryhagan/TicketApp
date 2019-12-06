@@ -1,3 +1,4 @@
+![TicketApp](https://raw.githubusercontent.com/barryhagan/TicketApp/master/src/TicketApi/ReactApp/src/components/zd.png) 
 # TicketApp
 
 Demonstration of a basic help desk search application.
